@@ -2,7 +2,13 @@ import './App.css';
 import Editor from './components/Editor';
 import Header from './components/Header';
 import List from './components/List';
-import { useState, useRef } from 'react';
+import { useState, useRef, useReducer } from 'react';
+
+const ACTION = Object.freeze({
+  DELETE: 'DELETE',
+  UPDATE: 'UPDATE',
+  CREATE: 'CREATE',
+});
 
 const mokData = [
   {
@@ -25,31 +31,49 @@ const mokData = [
   },
 ];
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTION.DELETE:
+      return state.filter((todo) => todo.id !== action.data);
+    case ACTION.UPDATE:
+      return state.map((todo) =>
+        todo.id === action.data ? { ...todo, isDone: !todo.isDone } : todo
+      );
+    case ACTION.CREATE:
+      return [action.data, ...state];
+    default:
+      return state;
+  }
+};
+
 function App() {
-  const [todos, setTodos] = useState(mokData);
+  const [todos, dispatch] = useReducer(reducer, mokData);
   const idRef = useRef(3);
 
   const onDelete = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    dispatch({
+      type: ACTION.DELETE,
+      data: id,
+    });
   };
 
   const onUpdate = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
+    dispatch({
+      type: ACTION.UPDATE,
+      data: id,
+    });
   };
 
   const onCreate = (content) => {
-    const newTodo = {
-      id: idRef.current++,
-      isDone: false,
-      content,
-      date: new Date().getTime(),
-    };
-
-    setTodos([newTodo, ...todos]);
+    dispatch({
+      type: ACTION.CREATE,
+      data: {
+        id: idRef.current++,
+        isDone: false,
+        content,
+        date: new Date().getTime(),
+      },
+    });
   };
 
   return (
