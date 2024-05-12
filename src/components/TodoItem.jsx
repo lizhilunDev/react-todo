@@ -24,15 +24,4 @@ const TodoItem = ({ todo, onUpdate, onDelete }) => {
   );
 };
 
-export default memo(TodoItem, (prevProps, nextProps) => {
-  if (
-    prevProps.todo.id !== nextProps.todo.id ||
-    prevProps.todo.isDone !== nextProps.todo.isDone ||
-    prevProps.todo.content !== nextProps.todo.content ||
-    prevProps.todo.date !== nextProps.todo.date
-  ) {
-    return false;
-  }
-
-  return true;
-});
+export default memo(TodoItem);

@@ -2,7 +2,7 @@ import './App.css';
 import Editor from './components/Editor';
 import Header from './components/Header';
 import List from './components/List';
-import { useState, useRef, useReducer } from 'react';
+import { useState, useRef, useReducer, useCallback } from 'react';
 
 const ACTION = Object.freeze({
   DELETE: 'DELETE',
@@ -50,21 +50,7 @@ function App() {
   const [todos, dispatch] = useReducer(reducer, mokData);
   const idRef = useRef(3);
 
-  const onDelete = (id) => {
-    dispatch({
-      type: ACTION.DELETE,
-      data: id,
-    });
-  };
-
-  const onUpdate = (id) => {
-    dispatch({
-      type: ACTION.UPDATE,
-      data: id,
-    });
-  };
-
-  const onCreate = (content) => {
+  const onCreate = useCallback((content) => {
     dispatch({
       type: ACTION.CREATE,
       data: {
@@ -74,7 +60,21 @@ function App() {
         date: new Date().getTime(),
       },
     });
-  };
+  }, []);
+
+  const onUpdate = useCallback((id) => {
+    dispatch({
+      type: ACTION.UPDATE,
+      data: id,
+    });
+  }, []);
+
+  const onDelete = useCallback((id) => {
+    dispatch({
+      type: ACTION.DELETE,
+      data: id,
+    });
+  }, []);
 
   return (
     <div className='App'>
