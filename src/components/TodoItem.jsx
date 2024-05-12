@@ -1,4 +1,5 @@
 import './TodoItem.css';
+import { memo } from 'react';
 
 const TodoItem = ({ todo, onUpdate, onDelete }) => {
   const onChangeCheckbox = () => {
@@ -23,4 +24,15 @@ const TodoItem = ({ todo, onUpdate, onDelete }) => {
   );
 };
 
-export default TodoItem;
+export default memo(TodoItem, (prevProps, nextProps) => {
+  if (
+    prevProps.todo.id !== nextProps.todo.id ||
+    prevProps.todo.isDone !== nextProps.todo.isDone ||
+    prevProps.todo.content !== nextProps.todo.content ||
+    prevProps.todo.date !== nextProps.todo.date
+  ) {
+    return false;
+  }
+
+  return true;
+});
