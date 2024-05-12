@@ -1,7 +1,10 @@
 import './Editor.css';
-import { useState, useRef } from 'react';
+import { TodoDispacthContext } from '../App';
+import { useState, useRef, useContext } from 'react';
 
-const Editor = ({ onCreate }) => {
+const Editor = () => {
+  const { onCreate } = useContext(TodoDispacthContext);
+
   const [content, setContent] = useState('');
   const inputRef = useRef();
 
